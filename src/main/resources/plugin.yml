@@ -1,0 +1,7 @@
+name: FeelyBots
+version: '${project.version}'
+main: dev.lockpickgames.feelybots.FeelyBots
+api-version: '1.20'
+depend:
+  - Citizens
+  - CommandAPI

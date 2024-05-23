@@ -1,0 +1,25 @@
+quests:
+    1:
+      difficulty: beginner
+      icon: 'oak_log'
+      title: '&8Lumberjack'
+      description:
+        - '&7Gather Oak logs and become a professional'
+        - '&7wood master'
+      target: '{all}_log'
+      goal: 10
+      rewards:
+        - 'diamond:5'
+        - 'iron_ingot:5'
+    2:
+      difficulty: beginner
+      icon: 'iron_pickaxe'
+      title: '&8Miner'
+      description:
+        - '&7Gather ores and become a professional'
+        - '&7miner'
+      target: '{all}_ore'
+      goal: 10
+      rewards:
+        - 'diamond_block'
+        - 'iron_block'
