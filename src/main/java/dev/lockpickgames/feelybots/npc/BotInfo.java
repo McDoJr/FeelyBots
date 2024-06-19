@@ -11,6 +11,6 @@ public interface BotInfo {
 
     String getName();
 
-    String getNickname();
+    String getRole();
 
 }

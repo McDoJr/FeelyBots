@@ -1,13 +1,13 @@
 package dev.lockpickgames.feelybots.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.StringArgument;
-import dev.jorel.commandapi.executors.CommandArguments;
+import dev.asurasoftware.asuraplugin.commands.AsuraCommand;
+import dev.asurasoftware.asuraplugin.commands.AsuraSubcommand;
+import dev.asurasoftware.asuraplugin.commands.CommandArguments;
+import dev.asurasoftware.asuraplugin.commands.StringArgument;
 import dev.lockpickgames.feelybots.FeelyBots;
 import dev.lockpickgames.feelybots.manager.BotsManager;
 import dev.lockpickgames.feelybots.npc.FeelyBot;
 import dev.lockpickgames.feelybots.utils.StringUtil;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -22,27 +22,27 @@ public class BotCommand {
     private static final BotsManager manager = FeelyBots.getInstance().getBotsManager();
 
     public static void register() {
-        new CommandAPICommand("feelybot")
+        new AsuraCommand("feelybot")
                 .withAliases("bot")
-                .withSubcommand(new CommandAPICommand("create")
+                .withSubcommand(new AsuraSubcommand("create")
                         .withPermission("feelybot.create")
-                        .withArguments(new StringArgument("name"))
-                        .withOptionalArguments(new StringArgument("nickname"))
+                        .withArgument(new StringArgument("name"))
+                        .withArgument(new StringArgument("role"))
                         .executesPlayer(BotCommand::create))
-                .withSubcommand(new CommandAPICommand("remove")
-                        .withPermission("feelybot.remove")
-                        .executesPlayer(BotCommand::remove))
-                .withSubcommand(new CommandAPICommand("reload")
+//                .withSubcommand(new AsuraSubcommand("remove")
+//                        .withPermission("feelybot.remove")
+//                        .executesPlayer(BotCommand::remove))
+                .withSubcommand(new AsuraSubcommand("reload")
                         .withPermission("feelybot.reload")
                         .executesPlayer(BotCommand::reload))
                 .register();
     }
 
     private static void create(Player player, CommandArguments arguments) {
-        Location location = player.getLocation().clone().add(0.5, 0, 0.5);
-        String name = (String) arguments.get(0);
-        String nickname = (String) arguments.getOrDefault(1, name);
-        FeelyBot feelyBot = new FeelyBot(name, nickname);
+        Location location = player.getLocation().clone();
+        String name = arguments.getAsString(0);
+        String role = arguments.getAsString(1);
+        FeelyBot feelyBot = new FeelyBot(name, role);
         manager.createBot(feelyBot);
         feelyBot.spawn(location);
     }

@@ -1,53 +1,57 @@
 package dev.lockpickgames.feelybots;
 
+import dev.asurasoftware.asuraplugin.AsuraPlugin;
 import dev.lockpickgames.feelybots.commands.BotCommand;
 import dev.lockpickgames.feelybots.listener.NPCListener;
 import dev.lockpickgames.feelybots.manager.BotsManager;
 import dev.lockpickgames.feelybots.manager.QuestManager;
+import dev.lockpickgames.feelybots.npc.EmotionTrait;
 import lombok.Getter;
+import lombok.NonNull;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.MemoryNPCDataStore;
-import net.citizensnpcs.api.npc.NPCRegistry;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.citizensnpcs.api.trait.TraitInfo;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
-public final class FeelyBots extends JavaPlugin {
+public final class FeelyBots extends AsuraPlugin {
+
+    private static final String SECRET_KEY = "h6Y1InfKmZHJ4xnvJGZV7mn7YYNfAQm3hm7A1sxz2oQFvmaK4IWOl8kroJZr8aCM";
 
     @Getter
     private static FeelyBots instance;
-
-    @Getter
-    private NPCRegistry npcRegistry;
 
     @Getter
     private BotsManager botsManager;
     @Getter
     private QuestManager questManager;
 
+    private BukkitAudiences adventure;
+
     @Override
-    public void onEnable() {
+    protected void enable() {
         // Plugin startup logic
         instance = this;
+        this.adventure = BukkitAudiences.create(this);
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
         this.botsManager = new BotsManager();
         this.questManager = new QuestManager();
-        setupCitizens();
         BotCommand.register();
+        setupCitizens();
         new NPCListener(this);
-        getLogger().info("FeelyBots has been loaded!");
     }
 
     @Override
-    public void onDisable() {
-        if(npcRegistry != null) {
-            botsManager.getBots().forEach((uuid, feelyBot) -> {
-                feelyBot.getNpc().destroy();
-            });
-        }
+    protected void disable() {
     }
 
     private void setupCitizens() {
-        // Creating an npcRegistry to store all created npc's in this project
-        this.npcRegistry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(EmotionTrait.class));
+    }
+
+    public @NonNull BukkitAudiences adventure() {
+        if(this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
     }
 }

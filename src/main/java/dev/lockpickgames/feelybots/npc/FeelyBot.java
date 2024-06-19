@@ -3,6 +3,7 @@ package dev.lockpickgames.feelybots.npc;
 import dev.lockpickgames.feelybots.FeelyBots;
 import dev.lockpickgames.feelybots.manager.QuestManager;
 import lombok.Getter;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
@@ -15,23 +16,24 @@ import java.util.UUID;
 public class FeelyBot extends BotQuest implements BotInfo {
 
     private final String name;
-    private final String nickname;
+    private final String role;
     private NPC npc;
 
     public FeelyBot(String name) {
         this(name, name);
     }
 
-    public FeelyBot(String name, String nickname) {
+    public FeelyBot(String name, String role) {
         super(name);
         this.name = name;
-        this.nickname = nickname;
+        this.role = role;
         this.init();
     }
 
     private void init() {
         FeelyBots plugin = FeelyBots.getInstance();
-        this.npc = plugin.getNpcRegistry().createNPC(EntityType.PLAYER, name);
+        this.npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
+        this.npc.addTrait(new EmotionTrait());
         this.npc.setProtected(true);
         LookClose trait = this.npc.getOrAddTrait(LookClose.class);
         trait.lookClose(true);
